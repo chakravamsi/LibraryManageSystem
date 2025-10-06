@@ -4,7 +4,7 @@ public class Member {
     private int memberId;
     private String name;
     private String contact;
-    private String role; // NEW FIELD
+    private String role; 
 
     public Member() {}
 

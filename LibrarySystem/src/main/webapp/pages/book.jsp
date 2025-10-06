@@ -136,7 +136,7 @@
 
 <h2>Manage Books</h2>
 
-<!-- Search Box -->
+
 <div class="search-box">
     <form action="books" method="get">
         <input type="text" name="search" placeholder="Search by Title or Author"
@@ -149,7 +149,7 @@
     Book bookToEdit = (Book) request.getAttribute("bookToEdit");
 %>
 
-<!-- Add/Edit Book Form Horizontal -->
+
 <div class="add-form">
     <form action="books" method="post">
         <input type="hidden" name="action" value="<%= (bookToEdit != null) ? "edit" : "add" %>" />
