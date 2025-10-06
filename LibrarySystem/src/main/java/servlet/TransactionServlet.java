@@ -161,7 +161,7 @@ public class TransactionServlet extends HttpServlet {
             ps1.setDate(1, Date.valueOf(LocalDate.now()));
             ps1.setInt(2, bookId);
             ps1.executeUpdate();
-
+   
             
             PreparedStatement ps2 = conn.prepareStatement(
                     "UPDATE books SET availability_status = TRUE WHERE book_id = ?"

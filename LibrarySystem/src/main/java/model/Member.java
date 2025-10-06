@@ -22,7 +22,7 @@ public class Member {
         this.name = name;
         this.contact = contact;
         this.role = role;
-    }
+    }  
 
     
     public int getMemberId() { return memberId; }

@@ -13,7 +13,7 @@ public class Transaction {
 
     public Transaction(int transactionId, int bookId, int memberId, LocalDate issueDate, LocalDate returnDate) {
         this.transactionId = transactionId;
-        this.bookId = bookId;
+        this.bookId = bookId;    
         this.memberId = memberId;
         this.issueDate = issueDate;
         this.returnDate = returnDate;

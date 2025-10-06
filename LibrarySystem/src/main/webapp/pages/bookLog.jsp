@@ -72,7 +72,7 @@
         <%
             List<BookLog> logs = (List<BookLog>) request.getAttribute("logs");
             if (logs != null && !logs.isEmpty()) {
-                for (BookLog log : logs) {
+                for (BookLog log : logs) {  
         %>
         <tr>
             <td><%= log.getBookTitle() %></td>

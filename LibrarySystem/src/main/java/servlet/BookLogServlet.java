@@ -74,7 +74,7 @@ public class BookLogServlet extends HttpServlet {
 
                 Date dueDate = Date.valueOf(due);
 
-                
+                  
                 LocalDate compareDate = (returnDate != null)
                         ? returnDate.toLocalDate()
                         : LocalDate.now();

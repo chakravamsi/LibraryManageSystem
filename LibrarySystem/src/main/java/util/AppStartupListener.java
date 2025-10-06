@@ -8,7 +8,7 @@ import jakarta.servlet.annotation.WebListener;
 public class AppStartupListener implements ServletContextListener {
 
     @Override
-    public void contextInitialized(ServletContextEvent sce) {
+    public void contextInitialized(ServletContextEvent sce) {  
         System.out.println("Initializing database...");
         DBUtil.initializeDatabase();
     }

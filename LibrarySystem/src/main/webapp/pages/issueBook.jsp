@@ -116,7 +116,7 @@
             <% }} %>
         </select>
 
-        <label for="memberId">Choose Member:</label>
+        <label for="memberId">Choose Member:</label>  
         <select name="memberId" id="memberId" required>
             <option value="">-- Select Member --</option>
             <%

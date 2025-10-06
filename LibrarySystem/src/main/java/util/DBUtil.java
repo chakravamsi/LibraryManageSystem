@@ -9,8 +9,8 @@ public class DBUtil {
 
     public static Connection getConnection() throws SQLException {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
+            Class.forName("com.mysql.cj.jdbc.Driver");  
+        } catch (ClassNotFoundException e) {  
             e.printStackTrace();
         }
         return DriverManager.getConnection(URL, USERNAME, PASSWORD);

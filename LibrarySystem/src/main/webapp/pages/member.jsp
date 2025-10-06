@@ -198,7 +198,7 @@
             <form action="members" method="post" style="display:inline-block; margin-left:5px;">
                 <input type="hidden" name="action" value="delete" />
                 <input type="hidden" name="memberId" value="<%= m.getMemberId() %>" />
-                <button type="submit" class="btn-delete">Delete</button>
+                <button type="submit" class="btn-delete">Delete</button>  
             </form>
         </td>
     </tr>

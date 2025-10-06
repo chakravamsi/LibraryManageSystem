@@ -60,7 +60,7 @@
             background-color: #0056b3;
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
+        }  
 
         .card span {
             margin-left: 10px;
