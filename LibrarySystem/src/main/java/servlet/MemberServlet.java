@@ -18,20 +18,36 @@ public class MemberServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String search = request.getParameter("search"); // Get search query
+        String search = request.getParameter("search");
+        String editId = request.getParameter("editId"); 
         List<Member> members = new ArrayList<>();
 
         try (Connection conn = DBUtil.getConnection()) {
-            PreparedStatement ps;
 
+           
+            if (editId != null) {
+                PreparedStatement ps = conn.prepareStatement("SELECT * FROM members WHERE member_id = ?");
+                ps.setInt(1, Integer.parseInt(editId));
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    Member memberToEdit = new Member(
+                            rs.getInt("member_id"),
+                            rs.getString("name"),
+                            rs.getString("contact"),
+                            rs.getString("role")
+                    );
+                    request.setAttribute("memberToEdit", memberToEdit);
+                }
+            }
+
+           
+            PreparedStatement ps;
             if (search != null && !search.trim().isEmpty()) {
-                // Search by name or ID
                 ps = conn.prepareStatement(
                         "SELECT * FROM members WHERE name LIKE ? OR member_id LIKE ?");
                 ps.setString(1, "%" + search.trim() + "%");
                 ps.setString(2, "%" + search.trim() + "%");
             } else {
-                // Get all members
                 ps = conn.prepareStatement("SELECT * FROM members");
             }
 
@@ -40,7 +56,8 @@ public class MemberServlet extends HttpServlet {
                 members.add(new Member(
                         rs.getInt("member_id"),
                         rs.getString("name"),
-                        rs.getString("contact")
+                        rs.getString("contact"),
+                        rs.getString("role")
                 ));
             }
 
@@ -64,6 +81,8 @@ public class MemberServlet extends HttpServlet {
             addMember(request, response);
         } else if ("delete".equals(action)) {
             deleteMember(request, response);
+        } else if ("edit".equals(action)) {
+            editMember(request, response);
         } else {
             response.sendRedirect("members");
         }
@@ -73,12 +92,14 @@ public class MemberServlet extends HttpServlet {
             throws IOException {
         String name = request.getParameter("name");
         String contact = request.getParameter("contact");
+        String role = request.getParameter("role");
 
         try (Connection conn = DBUtil.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO members (name, contact) VALUES (?, ?)");
+                    "INSERT INTO members (name, contact, role) VALUES (?, ?, ?)");
             ps.setString(1, name);
             ps.setString(2, contact);
+            ps.setString(3, role);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -95,6 +116,28 @@ public class MemberServlet extends HttpServlet {
             PreparedStatement ps = conn.prepareStatement(
                     "DELETE FROM members WHERE member_id = ?");
             ps.setInt(1, memberId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        response.sendRedirect("members");
+    }
+
+    private void editMember(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        int memberId = Integer.parseInt(request.getParameter("memberId"));
+        String name = request.getParameter("name");
+        String contact = request.getParameter("contact");
+        String role = request.getParameter("role");
+
+        try (Connection conn = DBUtil.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(
+                    "UPDATE members SET name = ?, contact = ?, role = ? WHERE member_id = ?");
+            ps.setString(1, name);
+            ps.setString(2, contact);
+            ps.setString(3, role);
+            ps.setInt(4, memberId);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

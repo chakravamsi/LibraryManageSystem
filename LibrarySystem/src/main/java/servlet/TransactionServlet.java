@@ -36,7 +36,7 @@ public class TransactionServlet extends HttpServlet {
         List<Member> members = new ArrayList<>();
 
         try (Connection conn = DBUtil.getConnection()) {
-            // Fetch available books
+            
             PreparedStatement psBooks = conn.prepareStatement("SELECT * FROM books WHERE availability_status = TRUE");
             ResultSet rsBooks = psBooks.executeQuery();
             while (rsBooks.next()) {
@@ -48,7 +48,7 @@ public class TransactionServlet extends HttpServlet {
                 ));
             }
 
-            // Fetch members
+            
             Statement stmt = conn.createStatement();
             ResultSet rsMembers = stmt.executeQuery("SELECT * FROM members");
             while (rsMembers.next()) {
@@ -121,7 +121,7 @@ public class TransactionServlet extends HttpServlet {
         try (Connection conn = DBUtil.getConnection()) {
             conn.setAutoCommit(false);
 
-            // 1️⃣ Insert into book_transactions (log)
+            
             PreparedStatement ps1 = conn.prepareStatement(
                     "INSERT INTO book_transactions (book_id, member_id, issue_date) VALUES (?, ?, ?)"
             );
@@ -130,7 +130,7 @@ public class TransactionServlet extends HttpServlet {
             ps1.setDate(3, Date.valueOf(LocalDate.now()));
             ps1.executeUpdate();
 
-            // 2️⃣ Update books table to mark availability false
+           
             PreparedStatement ps2 = conn.prepareStatement(
                     "UPDATE books SET availability_status = FALSE WHERE book_id = ?"
             );
@@ -153,7 +153,7 @@ public class TransactionServlet extends HttpServlet {
         try (Connection conn = DBUtil.getConnection()) {
             conn.setAutoCommit(false);
 
-            // 1️⃣ Update book_transactions to set return_date
+            
             PreparedStatement ps1 = conn.prepareStatement(
                     "UPDATE book_transactions SET return_date = ? " +
                     "WHERE book_id = ? AND return_date IS NULL"
@@ -162,7 +162,7 @@ public class TransactionServlet extends HttpServlet {
             ps1.setInt(2, bookId);
             ps1.executeUpdate();
 
-            // 2️⃣ Update books table to mark availability true
+            
             PreparedStatement ps2 = conn.prepareStatement(
                     "UPDATE books SET availability_status = TRUE WHERE book_id = ?"
             );

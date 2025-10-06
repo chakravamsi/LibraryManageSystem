@@ -15,7 +15,7 @@ public class AppStartupListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        // Optional: cleanup when the server stops
+        
         System.out.println("Application stopped.");
     }
 }

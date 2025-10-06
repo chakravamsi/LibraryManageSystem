@@ -18,20 +18,36 @@ public class BookServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String search = request.getParameter("search"); // Get search query
+        String search = request.getParameter("search");
+        String editId = request.getParameter("editId");
         List<Book> books = new ArrayList<>();
 
         try (Connection conn = DBUtil.getConnection()) {
-            PreparedStatement ps;
 
+            
+            if (editId != null) {
+                PreparedStatement ps = conn.prepareStatement("SELECT * FROM books WHERE book_id = ?");
+                ps.setInt(1, Integer.parseInt(editId));
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    Book bookToEdit = new Book(
+                            rs.getInt("book_id"),
+                            rs.getString("title"),
+                            rs.getString("author"),
+                            rs.getBoolean("availability_status")
+                    );
+                    request.setAttribute("bookToEdit", bookToEdit);
+                }
+            }
+
+           
+            PreparedStatement ps;
             if (search != null && !search.trim().isEmpty()) {
-                // Search by title or author
                 ps = conn.prepareStatement(
                         "SELECT * FROM books WHERE title LIKE ? OR author LIKE ?");
                 ps.setString(1, "%" + search.trim() + "%");
                 ps.setString(2, "%" + search.trim() + "%");
             } else {
-                // Get all books
                 ps = conn.prepareStatement("SELECT * FROM books");
             }
 
@@ -65,6 +81,8 @@ public class BookServlet extends HttpServlet {
             addBook(request, response);
         } else if ("delete".equals(action)) {
             deleteBook(request, response);
+        } else if ("edit".equals(action)) {
+            editBook(request, response);
         } else {
             response.sendRedirect("books");
         }
@@ -96,6 +114,26 @@ public class BookServlet extends HttpServlet {
             PreparedStatement ps = conn.prepareStatement(
                     "DELETE FROM books WHERE book_id = ?");
             ps.setInt(1, bookId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        response.sendRedirect("books");
+    }
+
+    private void editBook(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        int bookId = Integer.parseInt(request.getParameter("bookId"));
+        String title = request.getParameter("title");
+        String author = request.getParameter("author");
+
+        try (Connection conn = DBUtil.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement(
+                    "UPDATE books SET title = ?, author = ? WHERE book_id = ?");
+            ps.setString(1, title);
+            ps.setString(2, author);
+            ps.setInt(3, bookId);
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
